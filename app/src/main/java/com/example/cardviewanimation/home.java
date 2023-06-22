@@ -29,7 +29,7 @@ public class home extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        BottomSheetFramework bottomSheetFramework = new BottomSheetFramework(home.this);
+        BottomSheetFramework bottomSheetFramework = new BottomSheetFramework(this);
 
         binding.addButton.setOnClickListener(v -> {
 
