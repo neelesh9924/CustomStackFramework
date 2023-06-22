@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
+import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
@@ -22,11 +23,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BottomSheetFramework {
-    home parentFragment;
-    int clickedPosition;
-    ArrayList<View> views;
-
-    Info currentInfo;
+    private final home parentFragment;
+    private int clickedPosition;
+    private final ArrayList<View> views;
+    private final Info currentInfo;
+    private final MutableLiveData<Info> infoData;
 
     //int expandedHeight = 1200, collapsedHeight = 350;
 
@@ -37,6 +38,8 @@ public class BottomSheetFramework {
         clickedPosition = 0;
 
         currentInfo = new Info();
+
+        infoData = new MutableLiveData<>();
 
         createBottomSheet();
 
@@ -87,6 +90,10 @@ public class BottomSheetFramework {
 
         TextInputEditText number = views.get(0).findViewById(R.id.numberTextInputEditText);
 
+        TextView nameTextView = views.get(0).findViewById(R.id.nameTextView);
+
+        TextView numberTextView = views.get(0).findViewById(R.id.numberTextView);
+
         name.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -97,6 +104,7 @@ public class BottomSheetFramework {
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
                 currentInfo.setName(charSequence.toString().trim());
+                nameTextView.setText(charSequence.toString().trim());
 
             }
 
@@ -118,6 +126,7 @@ public class BottomSheetFramework {
                     currentInfo.setNumber(charSequence.toString().trim());
                     clickedPosition = 1;
                     handleViewCollapsing();
+                    numberTextView.setText(charSequence.toString().trim());
                 }
             }
 
@@ -129,6 +138,8 @@ public class BottomSheetFramework {
 
         TextInputEditText amount = views.get(1).findViewById(R.id.amountTextInputEditText);
 
+        TextView amountTextView = views.get(1).findViewById(R.id.amountTextView);
+
         amount.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -138,6 +149,7 @@ public class BottomSheetFramework {
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 currentInfo.setAmount(charSequence.toString().trim());
+                amountTextView.setText(charSequence.toString().trim());
             }
 
             @Override
@@ -160,12 +172,14 @@ public class BottomSheetFramework {
 
         views.get(2).findViewById(R.id.nextButton).setOnClickListener(v -> {
 
+            infoData.postValue(currentInfo);
+
         });
 
 
     }
 
-    public void handleViewCollapsing() {
+    private void handleViewCollapsing() {
 
         if (clickedPosition == views.size()) {
             return;
@@ -175,7 +189,7 @@ public class BottomSheetFramework {
     }
 
 
-    public void expandCardView(MaterialCardView cardView) {
+    private void expandCardView(MaterialCardView cardView) {
 
         animateAndExpandToWrapContent(cardView);
 
@@ -285,7 +299,12 @@ public class BottomSheetFramework {
         valueAnimator.start();
     }
 
-    private static class Info {
+    public MutableLiveData<Info> getInfo() {
+        return infoData;
+    }
+
+
+    public static class Info {
         String name;
         String number;
 

@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.cardviewanimation.databinding.FragmentHomeBinding;
 
@@ -33,6 +34,11 @@ public class home extends Fragment {
         binding.addButton.setOnClickListener(v -> {
 
 
+        });
+
+        bottomSheetFramework.getInfo().observe(getViewLifecycleOwner(), infoReturned -> {
+
+            Toast.makeText(getContext(), infoReturned.getName(), Toast.LENGTH_SHORT).show();
 
         });
 
