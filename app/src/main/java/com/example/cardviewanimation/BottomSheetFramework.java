@@ -3,24 +3,23 @@ package com.example.cardviewanimation;
 import android.animation.ValueAnimator;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.transition.Visibility;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
 import androidx.lifecycle.MutableLiveData;
 
-import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class BottomSheetFramework {
     private final home parentFragment;
@@ -65,9 +64,7 @@ public class BottomSheetFramework {
         parentFragment.binding.linearLayout.addView(cardView3);
         views.add(cardView3);
 
-//        if (clickedPosition == 0) {
-//            expandCardView((MaterialCardView) views.get(clickedPosition));
-//        }
+        addBottomMargins();
 
         //todo: handle dynamic height
 
@@ -179,6 +176,41 @@ public class BottomSheetFramework {
 
     }
 
+    //handling animations
+
+    private void addBottomMargins() {
+
+        views.forEach(view -> {
+
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+            int marginInPixelsNegative = (int) parentFragment.getContext().getResources().getDimension(R.dimen.bottom_margin_negative);
+
+            params.setMargins(0, 0, 0, marginInPixelsNegative);
+
+            view.setLayoutParams(params);
+
+            if (view instanceof ViewGroup) {
+                if (((ViewGroup) view).getChildCount() > 0) {
+
+                    FrameLayout.LayoutParams params1 = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    int marginInPixelsPositive = (int) parentFragment.getContext().getResources().getDimension(R.dimen.bottom_margin_positive);
+
+                    params1.setMargins(0, 0, 0, marginInPixelsPositive);
+
+                    ((ViewGroup) view).getChildAt(0).setLayoutParams(params1);
+                }
+            }
+
+        });
+
+        CardView cv1 = (CardView) views.get(0);
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.setMargins(0, 0, 0, -40);
+
+    }
+
     private void handleViewCollapsing() {
 
         if (clickedPosition == views.size()) {
@@ -191,7 +223,7 @@ public class BottomSheetFramework {
 
     private void expandCardView(MaterialCardView cardView) {
 
-        animateAndExpandToWrapContent(cardView);
+        animateExpandUsingWeight(cardView);
 
 
         if (clickedPosition != 2) {
@@ -213,7 +245,7 @@ public class BottomSheetFramework {
 
             views.forEach(view -> {
                 if (views.indexOf(view) == 1) {
-                    animateAndExpandToWrapContent((MaterialCardView) view);
+                    animateCollapseUsingWeight((MaterialCardView) view);
                     view.findViewById(R.id.majorLayout).setVisibility(View.GONE);
                     view.findViewById(R.id.miniLayout).setVisibility(View.VISIBLE);
                 } else if (views.indexOf(view) > 1)
@@ -225,7 +257,7 @@ public class BottomSheetFramework {
             views.forEach(view -> {
                 if (views.indexOf(view) <= clickedPosition + 1) {
                     if (views.indexOf(view) != clickedPosition) {
-                        animateAndExpandToWrapContent((MaterialCardView) view);
+                        animateCollapseUsingWeight((MaterialCardView) view);
 
                         if (views.indexOf(view) == views.size() - 1) {
                             return;
@@ -240,6 +272,9 @@ public class BottomSheetFramework {
 
         }
     }
+
+
+    //animations methods
 
     private void animateVisibility(final MaterialCardView cardView, int visibility) {
 
@@ -284,21 +319,68 @@ public class BottomSheetFramework {
     }
 
     private void animateAndExpandToWrapContent(final MaterialCardView cardView) {
+
         final int startHeight = cardView.getHeight();
+
         ValueAnimator valueAnimator = ValueAnimator.ofInt(startHeight, ViewGroup.LayoutParams.WRAP_CONTENT);
         valueAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
         valueAnimator.setDuration(300);
         valueAnimator.addUpdateListener(animation -> {
 
             int value = (int) animation.getAnimatedValue();
+
             ViewGroup.LayoutParams layoutParams = cardView.getLayoutParams();
             layoutParams.height = value;
             cardView.setLayoutParams(layoutParams);
 
         });
         valueAnimator.start();
+
     }
 
+    private void animateExpandUsingWeight(final MaterialCardView cardView) {
+
+
+        ValueAnimator valueAnimator = ValueAnimator.ofFloat(1f, 10f);
+        valueAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
+        valueAnimator.setDuration(300);
+        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                float animatedValue = (float) valueAnimator.getAnimatedValue();
+                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) cardView.getLayoutParams();
+                params.weight = animatedValue;
+                cardView.setLayoutParams(params);
+            }
+        });
+        valueAnimator.start();
+
+
+    }
+
+    private void animateCollapseUsingWeight(final MaterialCardView cardView) {
+
+        final float initialWeight = ((LinearLayout.LayoutParams) cardView.getLayoutParams()).weight;
+
+        ValueAnimator valueAnimator = ValueAnimator.ofFloat(initialWeight, 1f);
+        valueAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
+        valueAnimator.setDuration(300);
+        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                float animatedValue = (float) valueAnimator.getAnimatedValue();
+                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) cardView.getLayoutParams();
+                params.weight = animatedValue;
+                cardView.setLayoutParams(params);
+            }
+        });
+        valueAnimator.start();
+
+
+    }
+
+
+    //Managing and sending data to the fragment
     public MutableLiveData<Info> getInfo() {
         return infoData;
     }
@@ -307,6 +389,8 @@ public class BottomSheetFramework {
     public static class Info {
         String name;
         String number;
+
+        String amount;
 
         public String getName() {
             return name;
@@ -331,8 +415,6 @@ public class BottomSheetFramework {
         public void setAmount(String amount) {
             this.amount = amount;
         }
-
-        String amount;
     }
 
 
