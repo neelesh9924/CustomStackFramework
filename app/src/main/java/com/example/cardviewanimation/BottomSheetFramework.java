@@ -66,6 +66,8 @@ public class BottomSheetFramework {
 //            expandCardView((MaterialCardView) views.get(clickedPosition));
 //        }
 
+        //todo: handle dynamic height
+
         handleViewCollapsing();
 
         addListeners();
