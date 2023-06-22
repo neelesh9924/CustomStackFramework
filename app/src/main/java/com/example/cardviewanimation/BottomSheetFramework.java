@@ -12,6 +12,7 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.cardview.widget.CardView;
 import androidx.lifecycle.MutableLiveData;
@@ -26,17 +27,21 @@ public class BottomSheetFramework {
     private int clickedPosition;
     private final ArrayList<View> views;
     private final Info currentInfo;
-    private final MutableLiveData<Info> infoData;
 
-    //int expandedHeight = 1200, collapsedHeight = 350;
+    private final StepValidation valid;
+    private final MutableLiveData<Info> infoData;
 
     public BottomSheetFramework(home home) {
 
         this.parentFragment = home;
+
         views = new ArrayList<>();
+
         clickedPosition = 0;
 
         currentInfo = new Info();
+
+        valid = new StepValidation();
 
         infoData = new MutableLiveData<>();
 
@@ -48,31 +53,12 @@ public class BottomSheetFramework {
 
         addViews();
 
-    }
-
-    private void addViews() {
-
-        View cardView = LayoutInflater.from(parentFragment.getContext()).inflate(R.layout.cardview, parentFragment.binding.linearLayout, false);
-        parentFragment.binding.linearLayout.addView(cardView);
-        views.add(cardView);
-
-        View cardView2 = LayoutInflater.from(parentFragment.getContext()).inflate(R.layout.cardview2, parentFragment.binding.linearLayout, false);
-        parentFragment.binding.linearLayout.addView(cardView2);
-        views.add(cardView2);
-
-        View cardView3 = LayoutInflater.from(parentFragment.getContext()).inflate(R.layout.cardview3, parentFragment.binding.linearLayout, false);
-        parentFragment.binding.linearLayout.addView(cardView3);
-        views.add(cardView3);
-
-        addBottomMargins();
-
-        //todo: handle dynamic height
-
         handleViewCollapsing();
 
         addListeners();
 
     }
+
 
     private void addListeners() {
 
@@ -82,6 +68,8 @@ public class BottomSheetFramework {
                 handleViewCollapsing();
             });
         });
+
+        //todo: make below dynamic
 
         TextInputEditText name = views.get(0).findViewById(R.id.nameTextInputEditText);
 
@@ -119,11 +107,17 @@ public class BottomSheetFramework {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                if (currentInfo.getName().isEmpty()) {
+                    Toast.makeText(parentFragment.getContext(), "Enter your name", Toast.LENGTH_SHORT).show();
+                }
+
                 if (charSequence.toString().trim().length() == 10) {
                     currentInfo.setNumber(charSequence.toString().trim());
-                    clickedPosition = 1;
-                    handleViewCollapsing();
                     numberTextView.setText(charSequence.toString().trim());
+                    clickedPosition = 1;
+                    valid.setNameNumber(true);
+                    handleViewCollapsing();
                 }
             }
 
@@ -159,8 +153,15 @@ public class BottomSheetFramework {
             @Override
             public boolean onKey(View view, int i, KeyEvent keyEvent) {
                 if (i == KeyEvent.KEYCODE_ENTER) {
+
+                    if (currentInfo.getAmount().isEmpty()) {
+                        Toast.makeText(parentFragment.getContext(), "Enter amount", Toast.LENGTH_SHORT).show();
+                        return false;
+                    }
                     clickedPosition = 2;
+                    valid.setAmount(true);
                     handleViewCollapsing();
+                    valid.setPay(true);
                     return true;
                 }
                 return false;
@@ -176,7 +177,24 @@ public class BottomSheetFramework {
 
     }
 
-    //handling animations
+    //add views and handling animations
+
+    private void addViews() {
+
+        View cardView = LayoutInflater.from(parentFragment.getContext()).inflate(R.layout.cardview, parentFragment.binding.linearLayout, false);
+        parentFragment.binding.linearLayout.addView(cardView);
+        views.add(cardView);
+
+        View cardView2 = LayoutInflater.from(parentFragment.getContext()).inflate(R.layout.cardview2, parentFragment.binding.linearLayout, false);
+        parentFragment.binding.linearLayout.addView(cardView2);
+        views.add(cardView2);
+
+        View cardView3 = LayoutInflater.from(parentFragment.getContext()).inflate(R.layout.cardview3, parentFragment.binding.linearLayout, false);
+        parentFragment.binding.linearLayout.addView(cardView3);
+        views.add(cardView3);
+
+        addBottomMargins();
+    }
 
     private void addBottomMargins() {
 
@@ -204,11 +222,6 @@ public class BottomSheetFramework {
 
         });
 
-        CardView cv1 = (CardView) views.get(0);
-
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.setMargins(0, 0, 0, -40);
-
     }
 
     private void handleViewCollapsing() {
@@ -223,20 +236,18 @@ public class BottomSheetFramework {
 
     private void expandCardView(MaterialCardView cardView) {
 
-        animateExpandUsingWeight(cardView);
+        animateExpandCollapseUsingWeight(cardView, CardViewState.EXPAND);
 
-
-        if (clickedPosition != 2) {
+        if (clickedPosition != views.size() - 1) {
             views.get(clickedPosition).findViewById(R.id.majorLayout).setVisibility(View.VISIBLE);
             views.get(clickedPosition).findViewById(R.id.miniLayout).setVisibility(View.GONE);
         }
 
         collapseAllCardViews();
 
-        if (views.size() > clickedPosition + 1) {
-            animateVisibility((MaterialCardView) views.get(clickedPosition + 1), View.VISIBLE);
-
-        }
+//        if (views.size() > clickedPosition + 1) {
+//            animateExpandCollapseUsingWeight((MaterialCardView) views.get(clickedPosition + 1), null);
+//        }
     }
 
     private void collapseAllCardViews() {
@@ -244,20 +255,29 @@ public class BottomSheetFramework {
         if (clickedPosition == 0) {
 
             views.forEach(view -> {
+
                 if (views.indexOf(view) == 1) {
-                    animateCollapseUsingWeight((MaterialCardView) view);
+
+                    animateExpandCollapseUsingWeight((MaterialCardView) view, CardViewState.COLLAPSE);
                     view.findViewById(R.id.majorLayout).setVisibility(View.GONE);
                     view.findViewById(R.id.miniLayout).setVisibility(View.VISIBLE);
-                } else if (views.indexOf(view) > 1)
-                    animateVisibility((MaterialCardView) view, View.GONE);
+
+                } else if (views.indexOf(view) == views.size() - 1) {
+
+                    animateExpandCollapseUsingWeight((MaterialCardView) view, null);
+
+                }
+
             });
 
         } else {
 
+            views.get(views.size() - 1).setVisibility(View.VISIBLE);
+
             views.forEach(view -> {
                 if (views.indexOf(view) <= clickedPosition + 1) {
                     if (views.indexOf(view) != clickedPosition) {
-                        animateCollapseUsingWeight((MaterialCardView) view);
+                        animateExpandCollapseUsingWeight((MaterialCardView) view, CardViewState.COLLAPSE);
 
                         if (views.indexOf(view) == views.size() - 1) {
                             return;
@@ -275,94 +295,21 @@ public class BottomSheetFramework {
 
 
     //animations methods
-
-    private void animateVisibility(final MaterialCardView cardView, int visibility) {
-
-        int startHeight = cardView.getHeight();
-
-        ValueAnimator valueAnimator;
-
-        if (visibility == View.GONE) {
-            valueAnimator = ValueAnimator.ofInt(startHeight, 0);
-        } else {
-            valueAnimator = ValueAnimator.ofInt(startHeight, ViewGroup.LayoutParams.WRAP_CONTENT);
-
-        }
-
-        valueAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
-        valueAnimator.setDuration(300);
-        valueAnimator.addUpdateListener(animation -> {
-
-            int value = (int) animation.getAnimatedValue();
-            ViewGroup.LayoutParams layoutParams = cardView.getLayoutParams();
-            layoutParams.height = value;
-            cardView.setLayoutParams(layoutParams);
-
-        });
-        valueAnimator.start();
-    }
-
-    private void animateCardViewHeight(final MaterialCardView cardView, final int targetHeight) {
-        final int startHeight = cardView.getHeight();
-        ValueAnimator valueAnimator = ValueAnimator.ofInt(startHeight, targetHeight);
-        valueAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
-        valueAnimator.setDuration(300);
-        valueAnimator.addUpdateListener(animation -> {
-
-            int value = (int) animation.getAnimatedValue();
-            ViewGroup.LayoutParams layoutParams = cardView.getLayoutParams();
-            layoutParams.height = value;
-            cardView.setLayoutParams(layoutParams);
-
-        });
-        valueAnimator.start();
-    }
-
-    private void animateAndExpandToWrapContent(final MaterialCardView cardView) {
-
-        final int startHeight = cardView.getHeight();
-
-        ValueAnimator valueAnimator = ValueAnimator.ofInt(startHeight, ViewGroup.LayoutParams.WRAP_CONTENT);
-        valueAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
-        valueAnimator.setDuration(300);
-        valueAnimator.addUpdateListener(animation -> {
-
-            int value = (int) animation.getAnimatedValue();
-
-            ViewGroup.LayoutParams layoutParams = cardView.getLayoutParams();
-            layoutParams.height = value;
-            cardView.setLayoutParams(layoutParams);
-
-        });
-        valueAnimator.start();
-
-    }
-
-    private void animateExpandUsingWeight(final MaterialCardView cardView) {
-
-
-        ValueAnimator valueAnimator = ValueAnimator.ofFloat(1f, 10f);
-        valueAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
-        valueAnimator.setDuration(300);
-        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                float animatedValue = (float) valueAnimator.getAnimatedValue();
-                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) cardView.getLayoutParams();
-                params.weight = animatedValue;
-                cardView.setLayoutParams(params);
-            }
-        });
-        valueAnimator.start();
-
-
-    }
-
-    private void animateCollapseUsingWeight(final MaterialCardView cardView) {
+    private void animateExpandCollapseUsingWeight(final MaterialCardView cardView, CardViewState state) {
 
         final float initialWeight = ((LinearLayout.LayoutParams) cardView.getLayoutParams()).weight;
 
-        ValueAnimator valueAnimator = ValueAnimator.ofFloat(initialWeight, 1f);
+        float finalWeight = 0f;
+
+        if (state == CardViewState.COLLAPSE) {
+            finalWeight = 1f;
+        } else if (state == CardViewState.EXPAND) {
+            finalWeight = 10f;
+        } else {
+            cardView.setVisibility(View.GONE);
+        }
+
+        ValueAnimator valueAnimator = ValueAnimator.ofFloat(initialWeight, finalWeight);
         valueAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
         valueAnimator.setDuration(300);
         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -387,10 +334,9 @@ public class BottomSheetFramework {
 
 
     public static class Info {
-        String name;
-        String number;
-
-        String amount;
+        String name = "";
+        String number = "";
+        String amount = "";
 
         public String getName() {
             return name;
@@ -415,6 +361,44 @@ public class BottomSheetFramework {
         public void setAmount(String amount) {
             this.amount = amount;
         }
+    }
+
+    private static class StepValidation {
+
+        boolean nameNumber = false;
+
+        boolean amount = false;
+
+        boolean pay = false;
+
+        public boolean isNameNumber() {
+            return nameNumber;
+        }
+
+        public void setNameNumber(boolean nameNumber) {
+            this.nameNumber = nameNumber;
+        }
+
+        public boolean isAmount() {
+            return amount;
+        }
+
+        public void setAmount(boolean amount) {
+            this.amount = amount;
+        }
+
+        public boolean isPay() {
+            return pay;
+        }
+
+        public void setPay(boolean pay) {
+            this.pay = pay;
+        }
+    }
+
+    private enum CardViewState {
+        EXPAND,
+        COLLAPSE
     }
 
 

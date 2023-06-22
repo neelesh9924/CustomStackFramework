@@ -38,7 +38,7 @@ public class home extends Fragment {
 
         bottomSheetFramework.getInfo().observe(getViewLifecycleOwner(), infoReturned -> {
 
-            Toast.makeText(getContext(), infoReturned.getName(), Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getContext(), infoReturned.getName(), Toast.LENGTH_SHORT).show();
 
         });
 
