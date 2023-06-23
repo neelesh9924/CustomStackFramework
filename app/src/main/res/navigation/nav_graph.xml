@@ -10,4 +10,9 @@
         android:name="com.example.cardviewanimation.home"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" />
+    <fragment
+        android:id="@+id/bottomSheetFragment"
+        android:name="com.example.cardviewanimation.BottomSheetFragment"
+        android:label="fragment_bottom_sheet"
+        tools:layout="@layout/fragment_bottom_sheet" />
 </navigation>

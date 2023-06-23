@@ -3,7 +3,6 @@ package com.example.cardviewanimation;
 import android.animation.ValueAnimator;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +13,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.cardview.widget.CardView;
 import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.material.card.MaterialCardView;
@@ -22,8 +20,8 @@ import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
 
-public class BottomSheetFramework {
-    private final home parentFragment;
+public class StackFramework {
+    private final BottomSheetFragment parentFragment;
     private int clickedPosition;
     private final ArrayList<View> views;
     private final Info currentInfo;
@@ -31,7 +29,7 @@ public class BottomSheetFramework {
     private final StepValidation valid;
     private final MutableLiveData<Info> infoData;
 
-    public BottomSheetFramework(home home) {
+    public StackFramework(BottomSheetFragment home) {
 
         this.parentFragment = home;
 

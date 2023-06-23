@@ -9,13 +9,14 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.example.cardviewanimation.databinding.FragmentHomeBinding;
 
-public class home extends Fragment {
+public class home extends Fragment implements BottomSheetFragment.BottomSheetListener {
 
     FragmentHomeBinding binding;
+
+    BottomSheetFragment bottomSheetFragment;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -29,18 +30,20 @@ public class home extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        BottomSheetFramework bottomSheetFramework = new BottomSheetFramework(this);
+        bottomSheetFragment = new BottomSheetFragment();
 
         binding.addButton.setOnClickListener(v -> {
 
+            bottomSheetFragment.show(getParentFragmentManager(), "bottomSheetTag");
 
         });
 
-        bottomSheetFramework.getInfo().observe(getViewLifecycleOwner(), infoReturned -> {
 
-//            Toast.makeText(getContext(), infoReturned.getName(), Toast.LENGTH_SHORT).show();
+    }
 
-        });
+    @Override
+    public void getSubmittedDetails(String text) {
+
 
     }
 }
