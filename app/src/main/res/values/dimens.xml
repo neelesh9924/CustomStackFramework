@@ -2,7 +2,7 @@
 <resources>
     <dimen name="bottom_margin_negative">-45dp</dimen>
 
-    <dimen name="bottom_margin_positive">30dp</dimen>
+    <dimen name="bottom_margin_positive">35dp</dimen>
 
     <dimen name="min_height">200dp</dimen>
 </resources>

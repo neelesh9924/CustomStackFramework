@@ -1,16 +1,14 @@
 package com.example.cardviewanimation;
 
-import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 
 import com.example.cardviewanimation.databinding.FragmentBottomSheetBinding;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -57,14 +55,15 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements St
 
         setBottomSheetBehaviour(view);
 
-        //create a stack framework object and pass the layout ids and the listener
-        ArrayList<Integer> layoutIds = new ArrayList<>();
-        layoutIds.add(R.layout.cardview);
-        layoutIds.add(R.layout.cardview2);
-        layoutIds.add(R.layout.cardview3);
-//        layoutIds.add(R.layout.cardview4);
+        //example layout ids
+        ArrayList<StackItem> stackItemsList = new ArrayList<>();
+        stackItemsList.add(new StackItem(R.layout.inflating_layout1, R.color.color1, "1"));
+        stackItemsList.add(new StackItem(R.layout.inflating_layout2, R.color.color2, "2"));
+        stackItemsList.add(new StackItem(R.layout.inflating_layout3, R.color.color3, "3"));
+        stackItemsList.add(new StackItem(R.layout.inflating_layout4, R.color.color4, "4"));
 
-        stackFramework = new StackFramework(requireContext(), layoutIds, this);
+
+        stackFramework = new StackFramework(requireContext(), stackItemsList, this);
 
         stackFramework.createAndAddViews();
 
@@ -82,7 +81,7 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements St
     }
 
     @Override
-    public void onViewAdded(ArrayList<View> views) {
+    public void onViewAdded(ArrayList<CustomCardView> views) {
 
         //add the views to the stack framework
         for (View view : views) {

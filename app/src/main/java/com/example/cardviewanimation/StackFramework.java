@@ -2,25 +2,21 @@ package com.example.cardviewanimation;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-
-import androidx.lifecycle.MutableLiveData;
 
 import java.util.ArrayList;
 
 public class StackFramework {
     private final Context context;
-    private final ArrayList<Integer> layoutsList;
-    private final ArrayList<View> views;
+    private final ArrayList<StackItem> layoutsList;
+    private final ArrayList<CustomCardView> views;
     private final OnChangeListener listener;
 
-    public StackFramework(Context context, ArrayList<Integer> layoutsList, OnChangeListener listener) {
+    private CustomCardView customCardView;
+
+    public StackFramework(Context context, ArrayList<StackItem> layoutsList, OnChangeListener listener) {
 
         this.context = context;
 
@@ -35,32 +31,11 @@ public class StackFramework {
     //add views and handling animations
     public void createAndAddViews() {
 
-        layoutsList.forEach(id -> {
+        layoutsList.forEach(stackItem -> {
 
-            View view = LayoutInflater.from(context).inflate(id, null, false); //creating View by inflating the layouts with their ids from list
+            customCardView = new CustomCardView(context, stackItem);
 
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT); //setting various layout params to create the stack effect
-
-            int marginInPixelsNegative = (int) context.getResources().getDimension(R.dimen.bottom_margin_negative);
-
-            params.setMargins(0, 0, 0, marginInPixelsNegative);
-
-            view.setLayoutParams(params);
-
-            if (view instanceof ViewGroup) {
-                if (((ViewGroup) view).getChildCount() > 0) {
-
-                    FrameLayout.LayoutParams params1 = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                    int marginInPixelsPositive = (int) context.getResources().getDimension(R.dimen.bottom_margin_positive);
-
-                    params1.setMargins(0, 0, 0, marginInPixelsPositive);
-
-                    ((ViewGroup) view).getChildAt(0).setLayoutParams(params1);
-
-                }
-            }
-
-            views.add(view); //adding the view to the list
+            views.add(customCardView); //adding the view to the list
 
         });
 
@@ -79,6 +54,7 @@ public class StackFramework {
     }
 
     private void addListeners() {
+        //manage this and disable proceeding to next view if the data is not valid
 
         views.forEach(view -> {
 
@@ -91,7 +67,7 @@ public class StackFramework {
     }
 
 
-    private void expandView(View selectedView) {
+    private void expandView(CustomCardView selectedView) {
 
         int nextIndex = views.indexOf(selectedView) + 1;
 
@@ -114,7 +90,7 @@ public class StackFramework {
 
 
     //animations methods
-    private void animateExpandCollapseUsingWeight(final View view, CardViewState state) {
+    private void animateExpandCollapseUsingWeight(CustomCardView view, CardViewState state) {
 
         final float initialWeight = ((LinearLayout.LayoutParams) view.getLayoutParams()).weight;
 
@@ -122,17 +98,16 @@ public class StackFramework {
 
         if (state == CardViewState.COLLAPSE) {
 
-            view.findViewById(R.id.preLayout).setVisibility(View.VISIBLE);
-            view.findViewById(R.id.mainLayout).setVisibility(View.GONE);
+            finalWeight = 2f;
 
-            finalWeight = 1f;
+            view.collapsed();
 
         } else if (state == CardViewState.EXPAND) {
 
-            view.findViewById(R.id.preLayout).setVisibility(View.GONE);
-            view.findViewById(R.id.mainLayout).setVisibility(View.VISIBLE);
+            finalWeight = 5f;
 
-            finalWeight = 10f;
+            view.expanded();
+
 
         }
 
@@ -160,7 +135,6 @@ public class StackFramework {
 
 
     //Managing and sending data to the fragment
-
 
     public static class Info {
         String name = "";
@@ -192,8 +166,10 @@ public class StackFramework {
         }
     }
 
+
+    //interface to interact with the host fragment
     public interface OnChangeListener {
-        void onViewAdded(ArrayList<View> views);
+        void onViewAdded(ArrayList<CustomCardView> views);
 
 
     }
