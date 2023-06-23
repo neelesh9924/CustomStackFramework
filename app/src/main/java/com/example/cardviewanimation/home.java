@@ -9,8 +9,11 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.cardviewanimation.databinding.FragmentHomeBinding;
+
+import java.util.Random;
 
 public class home extends Fragment implements BottomSheetFragment.BottomSheetListener {
 
@@ -30,10 +33,11 @@ public class home extends Fragment implements BottomSheetFragment.BottomSheetLis
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        bottomSheetFragment = new BottomSheetFragment();
 
         binding.addButton.setOnClickListener(v -> {
 
+            bottomSheetFragment = BottomSheetFragment.newInstance("RXS11304S");
+            bottomSheetFragment.setListener(home.this);
             bottomSheetFragment.show(getParentFragmentManager(), "bottomSheetTag");
 
         });
@@ -43,6 +47,8 @@ public class home extends Fragment implements BottomSheetFragment.BottomSheetLis
 
     @Override
     public void getSubmittedDetails(String text) {
+
+        Toast.makeText(getContext(), text, Toast.LENGTH_SHORT).show();
 
 
     }

@@ -1,5 +1,6 @@
 package com.example.cardviewanimation;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 
@@ -15,17 +16,29 @@ import com.example.cardviewanimation.databinding.FragmentBottomSheetBinding;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
-public class BottomSheetFragment extends BottomSheetDialogFragment {
+import java.util.ArrayList;
+
+public class BottomSheetFragment extends BottomSheetDialogFragment implements StackFramework.OnChangeListener {
 
     FragmentBottomSheetBinding binding;
-
     BottomSheetListener listener;
 
+    StackFramework stackFramework;
+
     public BottomSheetFragment() {
-        // Required empty public constructor
+
     }
 
-    public BottomSheetFragment(BottomSheetListener listener) {
+    public static BottomSheetFragment newInstance(String forId) {
+
+        BottomSheetFragment fragment = new BottomSheetFragment();
+        Bundle args = new Bundle();
+        args.putString("forId", forId);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    public void setListener(BottomSheetListener listener) {
         this.listener = listener;
     }
 
@@ -44,12 +57,23 @@ public class BottomSheetFragment extends BottomSheetDialogFragment {
 
         setBottomSheetBehaviour(view);
 
-        StackFramework stackFramework = new StackFramework(this);
+        //create a stack framework object and pass the layout ids and the listener
+        ArrayList<Integer> layoutIds = new ArrayList<>();
+        layoutIds.add(R.layout.cardview);
+        layoutIds.add(R.layout.cardview2);
+        layoutIds.add(R.layout.cardview3);
+//        layoutIds.add(R.layout.cardview4);
 
-        stackFramework.getInfo().observe(getViewLifecycleOwner(), infoReturned -> {
+        stackFramework = new StackFramework(requireContext(), layoutIds, this);
 
+        stackFramework.createAndAddViews();
 
-        });
+        //get arguments from the parent fragment
+
+        Bundle args = getArguments();
+        String forId = args.getString("forId");
+
+        listener.getSubmittedDetails(forId);
 
 
         //send back a pojo of the filled data to the parent fragment
@@ -57,6 +81,23 @@ public class BottomSheetFragment extends BottomSheetDialogFragment {
 
     }
 
+    @Override
+    public void onViewAdded(ArrayList<View> views) {
+
+        //add the views to the stack framework
+        for (View view : views) {
+            binding.linearLayout.addView(view);
+        }
+
+
+    }
+
+    public interface BottomSheetListener { //interface to send back the data to the parent fragment
+        void getSubmittedDetails(String text);
+    }
+
+
+    //bottom sheet behaviour
     private void setBottomSheetBehaviour(View view) { //setting the top offset and various behaviours of the bottom sheet
 
         int topPaddingInDp = 180;
@@ -70,10 +111,6 @@ public class BottomSheetFragment extends BottomSheetDialogFragment {
         behavior.setDraggable(false);
 
 
-    }
-
-    public interface BottomSheetListener { //interface to send back the data to the parent fragment
-        void getSubmittedDetails(String text);
     }
 
     @Override
