@@ -1,4 +1,4 @@
-package com.example.cardviewanimation;
+package com.example.pojo;
 
 public class StackItem {
 

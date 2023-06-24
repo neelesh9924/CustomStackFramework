@@ -17,39 +17,35 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/amountTextInputLayout"
+            android:id="@+id/queryTextInputLayout"
             style="@style/textInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Amount"
+            android:hint="Query"
             android:maxWidth="400dp">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/amountTextInputEditText"
+                android:id="@+id/queryTextInputEditText"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:imeOptions="actionSearch"
-                android:inputType="number"
-                android:maxLines="1" />
+                android:inputType="text"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/numberTextInputLayout"
+            android:id="@+id/remarksTextInputLayout"
             style="@style/textInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Phone"
+            android:hint="Remarks"
             android:maxWidth="400dp">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/numberTextInputEditText"
+                android:id="@+id/remarksTextInputEditText"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:imeOptions="actionSearch"
-                android:inputType="phone"
-                android:maxLength="10"
-                android:maxLines="1" />
+                android:inputType="text" />
 
         </com.google.android.material.textfield.TextInputLayout>
 

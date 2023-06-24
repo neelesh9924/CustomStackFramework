@@ -1,5 +1,6 @@
 package com.example.cardviewanimation;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -12,6 +13,8 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.cardviewanimation.databinding.FragmentHomeBinding;
+import com.example.pojo.FilledDetails;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.Random;
 
@@ -46,10 +49,19 @@ public class home extends Fragment implements BottomSheetFragment.BottomSheetLis
     }
 
     @Override
-    public void getSubmittedDetails(String text) {
+    public void getSubmittedDetails(FilledDetails s) {
 
-        Toast.makeText(getContext(), text, Toast.LENGTH_SHORT).show();
+        StringBuilder formattedDetailsText = new StringBuilder("Name: " + s.getFirstName() + " " + s.getLastName() + "\nPhone: " + s.getPhone() + "\nEmail: " + s.getEmail() + "\nQuery: " + s.getQuery());
+        if (s.getRemarks() != null && s.getRemarks().length() > 0) {
+            formattedDetailsText.append("\nRemarks: ").append(s.getRemarks());
+        }
 
+        new MaterialAlertDialogBuilder(requireContext())
+                .setTitle("Submitted Details")
+                .setMessage(formattedDetailsText)
+                .setPositiveButton("Okay", (dialogInterface, i) -> {
+                    dialogInterface.dismiss();
+                }).show();
 
     }
 }

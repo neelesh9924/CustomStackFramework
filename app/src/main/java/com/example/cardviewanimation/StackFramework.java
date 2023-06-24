@@ -5,22 +5,24 @@ import android.content.Context;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.LinearLayout;
+import android.widget.Toast;
+
+import com.example.pojo.StackItem;
 
 import java.util.ArrayList;
 
 public class StackFramework {
     private final Context context;
-    private final ArrayList<StackItem> layoutsList;
+    private final ArrayList<StackItem> stackItems;
     private final ArrayList<CustomCardView> views;
     private final OnChangeListener listener;
-
     private CustomCardView customCardView;
 
-    public StackFramework(Context context, ArrayList<StackItem> layoutsList, OnChangeListener listener) {
+    public StackFramework(Context context, ArrayList<StackItem> stackItems, OnChangeListener listener) {
 
         this.context = context;
 
-        this.layoutsList = layoutsList;
+        this.stackItems = stackItems;
 
         this.listener = listener;
 
@@ -28,38 +30,51 @@ public class StackFramework {
 
     }
 
-    //add views and handling animations
-    public void createAndAddViews() {
+    public void createAndAddViews() { //creating the views and adding them to the list
 
-        layoutsList.forEach(stackItem -> {
+        stackItems.forEach(stackItem -> {
 
-            customCardView = new CustomCardView(context, stackItem);
+            customCardView = new CustomCardView(context);
+            customCardView.initCardView(stackItem);
 
-            views.add(customCardView); //adding the view to the list
+            views.add(customCardView);
 
         });
 
         listener.onViewAdded(views); //passing the list back to host so they can add in their desired ViewGroup
 
+        ArrayList<View> inflatedViews = new ArrayList<>();
+        views.forEach(view -> {
+
+            inflatedViews.add(view.getChildAt(0));
+
+        });
+
         initiateFirstView();
 
     }
 
-    private void initiateFirstView() {
+    private void initiateFirstView() { //expanded first view
 
         expandView(views.get(0));
+
+        views.get(0).setIsActive(true);
 
         addListeners();
 
     }
 
-    private void addListeners() {
-        //manage this and disable proceeding to next view if the data is not valid
+    private void addListeners() { //adding listeners to the views
+        //todo: manage this and disable proceeding to next view if the data is not valid
 
         views.forEach(view -> {
 
             view.setOnClickListener(v -> {
-                expandView(view);
+                if (view.getIsActive()) {
+                    expandView(view);
+                } else {
+                    Toast.makeText(context, "Please fill the above details", Toast.LENGTH_SHORT).show();
+                }
             });
 
         });
@@ -67,7 +82,7 @@ public class StackFramework {
     }
 
 
-    private void expandView(CustomCardView selectedView) {
+    private void expandView(CustomCardView selectedView) { //expanding the view
 
         int nextIndex = views.indexOf(selectedView) + 1;
 
@@ -79,18 +94,16 @@ public class StackFramework {
 
         views.forEach(view -> {
             if (view != selectedView) {
-                animateExpandCollapseUsingWeight(view, CardViewState.COLLAPSE);
+                animateExpandCollapseUsingWeight(view, CardViewState.COLLAPSE); //collapsing the rest of the views
                 if (views.indexOf(view) > nextIndex) {
-                    view.setVisibility(View.GONE);
+                    view.setVisibility(View.GONE); //hiding the views that are out of scope of current
                 }
             }
         });
 
     }
 
-
-    //animations methods
-    private void animateExpandCollapseUsingWeight(CustomCardView view, CardViewState state) {
+    private void animateExpandCollapseUsingWeight(CustomCardView view, CardViewState state) { //animation method
 
         final float initialWeight = ((LinearLayout.LayoutParams) view.getLayoutParams()).weight;
 
@@ -99,16 +112,12 @@ public class StackFramework {
         if (state == CardViewState.COLLAPSE) {
 
             finalWeight = 2f;
-
             view.collapsed();
 
         } else if (state == CardViewState.EXPAND) {
 
             finalWeight = 5f;
-
             view.expanded();
-
-
         }
 
         ValueAnimator valueAnimator = ValueAnimator.ofFloat(initialWeight, finalWeight);
@@ -124,8 +133,6 @@ public class StackFramework {
         });
 
         valueAnimator.start();
-
-
     }
 
     private enum CardViewState {
@@ -133,42 +140,7 @@ public class StackFramework {
         COLLAPSE
     }
 
-
-    //Managing and sending data to the fragment
-
-    public static class Info {
-        String name = "";
-        String number = "";
-        String amount = "";
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public String getNumber() {
-            return number;
-        }
-
-        public void setNumber(String number) {
-            this.number = number;
-        }
-
-        public String getAmount() {
-            return amount;
-        }
-
-        public void setAmount(String amount) {
-            this.amount = amount;
-        }
-    }
-
-
-    //interface to interact with the host fragment
-    public interface OnChangeListener {
+    public interface OnChangeListener { //interface to interact with the host fragment
         void onViewAdded(ArrayList<CustomCardView> views);
 
 
