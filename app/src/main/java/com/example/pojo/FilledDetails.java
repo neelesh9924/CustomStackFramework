@@ -2,6 +2,7 @@ package com.example.pojo;
 
 public class FilledDetails {
 
+    String eventId;
     String firstName;
 
     String lastName;
@@ -13,6 +14,14 @@ public class FilledDetails {
     String query;
 
     String remarks;
+
+    public String getEventId() {
+        return eventId;
+    }
+
+    public void setEventId(String eventId) {
+        this.eventId = eventId;
+    }
 
     public String getFirstName() {
         return firstName;

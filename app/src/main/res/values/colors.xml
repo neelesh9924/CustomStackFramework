@@ -13,4 +13,6 @@
 
     <color name="color4" >#93CAFB</color>
 
+    <color name="disabledStepColor">#E0E0E0</color>
+
 </resources>

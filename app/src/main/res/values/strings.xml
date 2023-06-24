@@ -2,4 +2,5 @@
     <string name="app_name">CardViewAnimation</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="titleHome">This is a prototype to demonstrate the use of a custom <font fgcolor="#FF0000"> StackView Framework</font></string>
 </resources>

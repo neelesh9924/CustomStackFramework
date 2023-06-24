@@ -2,14 +2,14 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
+
 
     <LinearLayout
         android:id="@+id/mainLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="30dp"
-
+        android:layout_margin="10dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -17,39 +17,42 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/queryTextInputLayout"
+            android:id="@+id/firstNameTextInputLayout"
             style="@style/textInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Query"
+            android:hint="First Name"
             android:maxWidth="400dp">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/queryTextInputEditText"
+                android:id="@+id/firstNameTextInputEditText"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:inputType="text"/>
+                android:inputType="textCapWords"
+                android:maxLines="1" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/remarksTextInputLayout"
+            android:id="@+id/lastNameTextInputLayout"
             style="@style/textInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Remarks"
+            android:layout_marginTop="10dp"
+            android:hint="Last Name"
             android:maxWidth="400dp">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/remarksTextInputEditText"
+                android:id="@+id/lastNameTextInputEditText"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:imeOptions="actionSearch"
-                android:inputType="text" />
+                android:maxLines="1"
+                android:inputType="textCapWords" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
 
     </LinearLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

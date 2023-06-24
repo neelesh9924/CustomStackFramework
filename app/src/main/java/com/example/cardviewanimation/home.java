@@ -1,6 +1,5 @@
 package com.example.cardviewanimation;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -10,13 +9,10 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.example.cardviewanimation.databinding.FragmentHomeBinding;
 import com.example.pojo.FilledDetails;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-
-import java.util.Random;
 
 public class home extends Fragment implements BottomSheetFragment.BottomSheetListener {
 
@@ -25,7 +21,7 @@ public class home extends Fragment implements BottomSheetFragment.BottomSheetLis
     BottomSheetFragment bottomSheetFragment;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentHomeBinding.inflate(inflater, container, false);
@@ -36,22 +32,49 @@ public class home extends Fragment implements BottomSheetFragment.BottomSheetLis
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        binding.button1.setOnClickListener(v -> openBottomSheet("1"));
 
-        binding.addButton.setOnClickListener(v -> {
+        binding.button2.setOnClickListener(v -> openBottomSheet("2"));
 
-            bottomSheetFragment = BottomSheetFragment.newInstance("RXS11304S");
-            bottomSheetFragment.setListener(home.this);
-            bottomSheetFragment.show(getParentFragmentManager(), "bottomSheetTag");
+        binding.button3.setOnClickListener(v -> openBottomSheet("3"));
 
-        });
-
+        binding.button4.setOnClickListener(v -> openBottomSheet("4"));
 
     }
 
-    @Override
-    public void getSubmittedDetails(FilledDetails s) {
+    public void openBottomSheet(String eventId) { //Open BottomSheetFragment
+        if (bottomSheetFragment != null && bottomSheetFragment.isVisible()) {
+            return;
+        }
+        bottomSheetFragment = BottomSheetFragment.newInstance(eventId);
+        bottomSheetFragment.setListener(home.this);
+        bottomSheetFragment.show(getParentFragmentManager(), "bottomSheetTag");
+    }
 
-        StringBuilder formattedDetailsText = new StringBuilder("Name: " + s.getFirstName() + " " + s.getLastName() + "\nPhone: " + s.getPhone() + "\nEmail: " + s.getEmail() + "\nQuery: " + s.getQuery());
+    @Override
+    public void getSubmittedDetails(FilledDetails s) { //Submitted Details received from BottomSheetFragment
+
+        StringBuilder formattedDetailsText = new StringBuilder();
+        formattedDetailsText.append("Submitted Details-\n");
+        formattedDetailsText.append("\nEvent ID: ").append(s.getEventId());
+        switch (s.getEventId()) {
+            case "1":
+                formattedDetailsText.append("\nEvent Name: ").append("Event A");
+                break;
+            case "2":
+                formattedDetailsText.append("\nEvent Name: ").append("Event B");
+                break;
+            case "3":
+                formattedDetailsText.append("\nEvent Name: ").append("Event C");
+                break;
+            case "4":
+                formattedDetailsText.append("\nEvent Name: ").append("Event D");
+                break;
+        }
+        formattedDetailsText.append("\nName: ").append(s.getFirstName()).append(" ").append(s.getLastName());
+        formattedDetailsText.append("\nPhone: ").append(s.getPhone());
+        formattedDetailsText.append("\nEmail: ").append(s.getEmail());
+        formattedDetailsText.append("\nQuery: ").append(s.getQuery());
         if (s.getRemarks() != null && s.getRemarks().length() > 0) {
             formattedDetailsText.append("\nRemarks: ").append(s.getRemarks());
         }
@@ -59,9 +82,7 @@ public class home extends Fragment implements BottomSheetFragment.BottomSheetLis
         new MaterialAlertDialogBuilder(requireContext())
                 .setTitle("Submitted Details")
                 .setMessage(formattedDetailsText)
-                .setPositiveButton("Okay", (dialogInterface, i) -> {
-                    dialogInterface.dismiss();
-                }).show();
+                .setPositiveButton("Okay", (dialogInterface, i) -> dialogInterface.dismiss()).show();
 
     }
 }

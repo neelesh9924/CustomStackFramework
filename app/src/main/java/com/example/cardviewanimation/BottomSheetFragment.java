@@ -1,5 +1,6 @@
 package com.example.cardviewanimation;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -7,12 +8,16 @@ import androidx.annotation.Nullable;
 
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.cardviewanimation.databinding.FragmentBottomSheetBinding;
+import com.example.customViews.CustomCardView;
+import com.example.frameworks.StackFramework;
 import com.example.pojo.FilledDetails;
 import com.example.pojo.StackItem;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -28,7 +33,8 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements St
     BottomSheetListener listener;
     StackFramework stackFramework;
 
-    String forId = "";
+    String eventId = "";
+    FilledDetails filledDetails;
 
     public BottomSheetFragment() {
 
@@ -49,7 +55,7 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements St
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentBottomSheetBinding.inflate(inflater, container, false);
@@ -64,48 +70,62 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements St
 
         //get arguments from the parent fragment
         Bundle args = getArguments();
-        String forId = args.getString("forId");
+        if (args != null) {
+            eventId = args.getString("forId");
+        }
 
-        //example layouts added to stack items list
+        filledDetails = new FilledDetails();
+        filledDetails.setEventId(eventId);
+
+        //todo: example layouts added to stack items list, change them to your desired layouts
+        //format of stack item: (your layout on expanded), (layout before step isn't reached yet), (layout after a step is been reached), (color of the step)
+
         ArrayList<StackItem> stackItemsList = new ArrayList<>();
-        stackItemsList.add(new StackItem(R.layout.inflating_layout1, R.color.color1, "Basic Details"));
-        stackItemsList.add(new StackItem(R.layout.inflating_layout2, R.color.color2, "Address Information"));
-        stackItemsList.add(new StackItem(R.layout.inflating_layout3, R.color.color3, "Query and Issues"));
-        stackItemsList.add(new StackItem(R.layout.inflating_layout4, R.color.color4, "Submit Details"));
+        stackItemsList.add(new StackItem(R.layout.main_layout1, R.layout.pre_layout1, R.layout.post_layout1, R.color.color1));
+        stackItemsList.add(new StackItem(R.layout.main_layout2, R.layout.pre_layout2, R.layout.post_layout2, R.color.color2));
+        stackItemsList.add(new StackItem(R.layout.main_layout3, R.layout.pre_layout3, R.layout.post_layout3, R.color.color3));
+        stackItemsList.add(new StackItem(R.layout.main_layout4, R.layout.pre_layout4, R.layout.post_layout4, R.color.color4));
 
-        stackFramework = new StackFramework(requireContext(), stackItemsList, this);
-        stackFramework.createAndAddViews();
+        stackFramework = new StackFramework(requireContext(), stackItemsList, this); //setting up the framework
+
+        stackFramework.createAndAddViews(); //call when you want to create the views
 
     }
 
     @Override
-    public void onViewAdded(ArrayList<CustomCardView> customCardViewsCreated) { //add the views to your desired layout
+    public void onViewAdded(ArrayList<CustomCardView> customCardViewsCreated) { //response from the framework when a view are created
 
-        customCardViewsCreated.forEach(customCardView -> binding.linearLayout.addView(customCardView));
+        customCardViewsCreated.forEach(customCardView -> binding.linearLayout.addView(customCardView)); //todo: add the views to your desired layout
 
-        handleInflatedView(customCardViewsCreated); // add actions and listeners to the views
+        handleInflatedView(customCardViewsCreated);
 
     }
 
-    public void handleInflatedView(ArrayList<CustomCardView> customCardViewsCreated) { //handle the inflated views here, like setting the data to the views, setting the listeners etc
+    @SuppressLint("SetTextI18n")
+    public void handleInflatedView(ArrayList<CustomCardView> customCardViewsCreated) { //todo: handle your inflated views here, adding the data to the views, setting the listeners etc.
 
         //init
-        CustomCardView infV1 = customCardViewsCreated.get(0);
-        TextInputEditText firstNameEditText = infV1.findViewById(R.id.firstNameTextInputEditText);
-        TextInputEditText lastNameEditText = infV1.findViewById(R.id.lastNameTextInputEditText);
+        CustomCardView view1 = customCardViewsCreated.get(0);
+        TextInputEditText firstNameEditText = view1.findViewById(R.id.firstNameTextInputEditText);
+        TextInputEditText lastNameEditText = view1.findViewById(R.id.lastNameTextInputEditText);
+        TextView firstNameTextView = view1.findViewById(R.id.firstNameTextView);
+        TextView lastNameTextView = view1.findViewById(R.id.lastNameTextView);
 
-        CustomCardView infV2 = customCardViewsCreated.get(1);
-        TextInputEditText phoneEditText = infV2.findViewById(R.id.phoneTextInputEditText);
-        TextInputEditText emailEditText = infV2.findViewById(R.id.emailTextInputEditText);
+        CustomCardView view2 = customCardViewsCreated.get(1);
+        TextInputEditText phoneEditText = view2.findViewById(R.id.phoneTextInputEditText);
+        TextInputEditText emailEditText = view2.findViewById(R.id.emailTextInputEditText);
+        TextView phoneTextView = view2.findViewById(R.id.phoneTextView);
+        TextView emailTextView = view2.findViewById(R.id.emailTextView);
 
-        CustomCardView infV3 = customCardViewsCreated.get(2);
-        TextInputEditText queryEditText = infV3.findViewById(R.id.queryTextInputEditText);
-        TextInputEditText remarksEditText = infV3.findViewById(R.id.remarksTextInputEditText);
+        CustomCardView view3 = customCardViewsCreated.get(2);
+        TextInputEditText queryEditText = view3.findViewById(R.id.queryTextInputEditText);
+        TextInputEditText remarksEditText = view3.findViewById(R.id.remarksTextInputEditText);
+        TextView queryTextView = view3.findViewById(R.id.queryTextView);
+        TextView remarksTextView = view3.findViewById(R.id.remarksTextView);
 
-        CustomCardView infV4 = customCardViewsCreated.get(3);
-        MaterialButton submitButton = infV4.findViewById(R.id.submit_button);
-
-        FilledDetails filledDetails = new FilledDetails();
+        CustomCardView view4 = customCardViewsCreated.get(3);
+        MaterialButton submitButton = view4.findViewById(R.id.submit_button);
+        TextView submitTextView = view4.findViewById(R.id.submitTextView);
 
         //adding listeners
         firstNameEditText.addTextChangedListener(new TextWatcher() {
@@ -117,6 +137,7 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements St
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 filledDetails.setFirstName(charSequence.toString().trim());
+                firstNameTextView.setText(charSequence.toString().trim());
             }
 
             @Override
@@ -138,8 +159,8 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements St
                     firstNameEditText.requestFocus();
                 } else {
                     filledDetails.setLastName(charSequence.toString().trim());
-                    infV2.setIsActive(true); //todo: change color
-
+                    lastNameTextView.setText(charSequence.toString().trim());
+                    view1.setCompleted(true);
                 }
             }
 
@@ -147,6 +168,14 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements St
             public void afterTextChanged(Editable editable) {
 
             }
+        });
+
+        lastNameEditText.setOnKeyListener((view, i, keyEvent) -> {
+            if (i == KeyEvent.KEYCODE_ENTER) {
+                stackFramework.expandView(view2);
+                return true;
+            }
+            return false;
         });
 
         phoneEditText.addTextChangedListener(new TextWatcher() { //similarly add listeners to other views
@@ -158,6 +187,7 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements St
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 filledDetails.setPhone(charSequence.toString().trim());
+                phoneTextView.setText(charSequence.toString().trim());
             }
 
             @Override
@@ -182,7 +212,8 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements St
                     phoneEditText.requestFocus();
                 } else {
                     filledDetails.setEmail(charSequence.toString().trim());
-                    infV3.setIsActive(true); //todo: change color
+                    emailTextView.setText(charSequence.toString().trim());
+                    view2.setCompleted(true);
                 }
 
             }
@@ -191,6 +222,14 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements St
             public void afterTextChanged(Editable editable) {
 
             }
+        });
+
+        emailEditText.setOnKeyListener((view, i, keyEvent) -> {
+            if (i == KeyEvent.KEYCODE_ENTER) {
+                stackFramework.expandView(view3);
+                return true;
+            }
+            return false;
         });
 
         queryEditText.addTextChangedListener(new TextWatcher() {
@@ -203,10 +242,8 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements St
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
                 filledDetails.setQuery(charSequence.toString().trim());
+                queryTextView.setText(charSequence.toString().trim());
 
-                if (filledDetails.getQuery() != null && filledDetails.getQuery().length() > 0) {
-                    infV4.setIsActive(true); //todo: change color
-                }
             }
 
             @Override
@@ -223,7 +260,15 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements St
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                filledDetails.setRemarks(charSequence.toString().trim());
+                if (filledDetails.getQuery() == null || filledDetails.getQuery().isEmpty()) {
+                    Toast.makeText(requireContext(), "Please enter query first", Toast.LENGTH_SHORT).show();
+                    queryEditText.requestFocus();
+                } else {
+                    filledDetails.setRemarks(charSequence.toString().trim());
+                    remarksTextView.setText(charSequence.toString().trim());
+                    view3.setCompleted(true);
+                }
+
             }
 
             @Override
@@ -232,21 +277,24 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements St
             }
         });
 
-        submitButton.setOnClickListener(view -> {
+        remarksEditText.setOnKeyListener((view, i, keyEvent) -> {
+            if (i == KeyEvent.KEYCODE_ENTER) {
+                stackFramework.expandView(view4);
+                return true;
+            }
+            return false;
+        });
 
-            submitDetails(filledDetails);
+        submitTextView.setText("Submit the form for the event id: " + eventId);
+
+        submitButton.setOnClickListener(view -> { //send the data back to the parent fragment and dismiss the bottom sheet
+
+            listener.getSubmittedDetails(filledDetails);
+            dismiss();
 
 
         });
 
-
-    }
-
-    private void submitDetails(FilledDetails filledDetails) {
-
-        listener.getSubmittedDetails(filledDetails);
-
-        dismiss();
 
     }
 

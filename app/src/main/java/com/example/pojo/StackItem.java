@@ -2,24 +2,27 @@ package com.example.pojo;
 
 public class StackItem {
 
-    private int layoutId;
+    private int mainLayoutId;
+
+    private int preLayoutId;
+
+    private int postLayoutId;
 
     private int bgColorId;
 
-    private String title;
-
-    public StackItem(int layoutId, int bgColorId, String title) {
-        this.layoutId = layoutId;
+    public StackItem(int mainLayoutId, int preLayoutId, int postLayoutId, int bgColorId) {
+        this.mainLayoutId = mainLayoutId;
+        this.preLayoutId = preLayoutId;
+        this.postLayoutId = postLayoutId;
         this.bgColorId = bgColorId;
-        this.title = title;
     }
 
-    public int getLayoutId() {
-        return layoutId;
+    public int getMainLayoutId() {
+        return mainLayoutId;
     }
 
-    public void setLayoutId(int layoutId) {
-        this.layoutId = layoutId;
+    public void setMainLayoutId(int mainLayoutId) {
+        this.mainLayoutId = mainLayoutId;
     }
 
     public int getBgColorId() {
@@ -30,11 +33,19 @@ public class StackItem {
         this.bgColorId = bgColorId;
     }
 
-    public String getTitle() {
-        return title;
+    public int getPreLayoutId() {
+        return preLayoutId;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setPreLayoutId(int preLayoutId) {
+        this.preLayoutId = preLayoutId;
+    }
+
+    public int getPostLayoutId() {
+        return postLayoutId;
+    }
+
+    public void setPostLayoutId(int postLayoutId) {
+        this.postLayoutId = postLayoutId;
     }
 }

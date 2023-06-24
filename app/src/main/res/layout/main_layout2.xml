@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
 
     <LinearLayout
         android:id="@+id/mainLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="30dp"
+        android:layout_margin="10dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -18,43 +17,40 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/firstNameTextInputLayout"
+            android:id="@+id/phoneTextInputLayout"
             style="@style/textInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:hint="First Name"
+            android:hint="Phone Number"
             android:maxWidth="400dp">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/firstNameTextInputEditText"
+                android:id="@+id/phoneTextInputEditText"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:inputType="textCapWords"
-                android:maxLines="1" />
+                android:inputType="number"
+                android:maxLength="10" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/lastNameTextInputLayout"
+            android:id="@+id/emailTextInputLayout"
             style="@style/textInputLayout"
             android:layout_width="match_parent"
+            android:layout_marginTop="10dp"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:hint="Last Name"
+            android:hint="Email"
             android:maxWidth="400dp">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/lastNameTextInputEditText"
+                android:id="@+id/emailTextInputEditText"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:maxLines="1"
-                android:inputType="textCapWords" />
+                android:inputType="textEmailAddress" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
 
     </LinearLayout>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
