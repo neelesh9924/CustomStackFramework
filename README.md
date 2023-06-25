@@ -27,6 +27,12 @@ To start using the ***StackFramework***, perform the following steps:
 
    stackFramework = new StackFramework(requireContext(), stackItemsList, this);
    ```
+   > First layout (main_layout) is the layout that you want to be visible when the step is expanded
+   
+   > Second layout (pre_layout) is the layout that you want to be visible when the step is collapsed and user haven't reached that step
+   
+   > Third layout (post_layout) is the layout that you want to be visible when the step is collapsed and user have completed that step
+   
    In the above code, stackItemsList is an ArrayList of ***StackItem*** objects. Each StackItem represents a step in the stack and contains layout resources and colors associated with that step.
 
 2. Call the createAndAddViews() method when you want to create the views:
