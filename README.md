@@ -1,3 +1,7 @@
+# Download the APK
+Click to download the apk for the project -
+[app-release.apk](app-release.apk)
+
 # StackFramework and CustomCardView
 ### Simplified Stack-Based View Management
 
