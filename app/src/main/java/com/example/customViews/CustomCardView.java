@@ -15,6 +15,8 @@ public class CustomCardView extends MaterialCardView {
     private StackItem stackItem;
     private final Context context;
     private Boolean isCompleted = false; //to set current steps operation completed or not
+
+    private Boolean isEnabled = false; //to set current steps expanded or not
     private View mainView, preView, postView;
 
     public CustomCardView(Context context) {
@@ -75,20 +77,6 @@ public class CustomCardView extends MaterialCardView {
 
         }
 
-        setInflatedViewBackgroundColour(R.color.disabledStepColor);
-
-    }
-
-    private void setInflatedViewBackgroundColour(int bgColorId) { //matching the background colour of the inflated views with the parent
-
-        setBackgroundTintList(ContextCompat.getColorStateList(getContext(), bgColorId));
-
-        if (getChildCount() > 0) {
-            for (int i = 0; i < getChildCount(); i++) {
-                getChildAt(i).setBackgroundTintList(ContextCompat.getColorStateList(getContext(), bgColorId));
-            }
-        }
-
         createInstancesChild();
 
     }
@@ -104,11 +92,33 @@ public class CustomCardView extends MaterialCardView {
         postView = getChildAt(2);
         postView.setVisibility(View.GONE);
 
+        setInflatedViewBackgroundColour(false);
+
+    }
+
+    private void setInflatedViewBackgroundColour(boolean isEnabled) { //matching the background colour of the inflated views with the parent
+
+        int colorId;
+        if (isEnabled) {
+            colorId = stackItem.getBgColorId();
+        } else {
+            colorId = R.color.disabledStepColor;
+        }
+
+        setBackgroundTintList(ContextCompat.getColorStateList(getContext(), colorId));
+
+        if (getChildCount() > 0) {
+            for (int i = 0; i < getChildCount(); i++) {
+                getChildAt(i).setBackgroundTintList(ContextCompat.getColorStateList(getContext(), colorId));
+            }
+        }
+
+
     }
 
     public void expand() { //toggling the visibility of the inner view
 
-        setInflatedViewBackgroundColour(stackItem.getBgColorId());
+//        setInflatedViewBackgroundColour(true); //todo: remove this
 
         mainView.setVisibility(View.VISIBLE);
         preView.setVisibility(View.GONE);
@@ -132,15 +142,23 @@ public class CustomCardView extends MaterialCardView {
         return isCompleted;
     }
 
-    public void setCompleted(Boolean completed) {
-        isCompleted = completed;
+    public void setCompleted(Boolean isCompleted) {
+        this.isCompleted = isCompleted;
     }
 
+    public Boolean getEnabledToExpand() {
+        return isEnabled;
+    }
+
+    public void setEnabledToExpand(Boolean isEnabled) {
+
+        this.isEnabled = isEnabled;
+        setInflatedViewBackgroundColour(isEnabled);
+
+    }
 
     private static int dpToPx(Context context, float dp) { //converting dp to pixels
         float density = context.getResources().getDisplayMetrics().density;
         return Math.round(dp * density);
     }
-
-
 }

@@ -50,6 +50,7 @@ public class StackFramework {
 
     private void initiateFirstView() { //expanded first view
 
+        views.get(0).setEnabledToExpand(true);
         expandView(views.get(0));
 
         addListeners();
@@ -65,7 +66,7 @@ public class StackFramework {
 
             view.setOnClickListener(v -> {
 
-                if (currentIndex == 0) {
+                /*if (currentIndex == 0) {
                     expandView(view); //for the first view
                     return;
                 }
@@ -76,15 +77,22 @@ public class StackFramework {
                     } else {
                         Toast.makeText(context, "Please fill the above details", Toast.LENGTH_SHORT).show();
                     }
+                }*/
+
+                if (view.getEnabledToExpand()) {
+                    expandView(view);
+                } else {
+                    Toast.makeText(context, "Please fill the above details", Toast.LENGTH_SHORT).show();
                 }
             });
+
 
         });
 
     }
 
 
-    public void expandView(CustomCardView selectedView) {
+    private void expandView(CustomCardView selectedView) {
 
         int nextIndex = views.indexOf(selectedView) + 1;
 
@@ -135,6 +143,18 @@ public class StackFramework {
         });
 
         valueAnimator.start();
+    }
+
+    public void setCompleted(CustomCardView view, Boolean isComplete) { //setting the view as completed and enabling the next view
+
+        int currentIndex = views.indexOf(view);
+        int nextIndex = currentIndex + 1;
+
+        if (nextIndex < views.size()) {
+            views.get(currentIndex).setCompleted(isComplete);
+            views.get(nextIndex).setEnabledToExpand(isComplete);
+        }
+
     }
 
     private enum CardViewState {

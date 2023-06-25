@@ -8,7 +8,6 @@ import androidx.annotation.Nullable;
 
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -160,7 +159,7 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements St
                 } else {
                     filledDetails.setLastName(charSequence.toString().trim());
                     lastNameTextView.setText(charSequence.toString().trim());
-                    view1.setCompleted(true);
+                    stackFramework.setCompleted(view1, true);
                 }
             }
 
@@ -168,14 +167,6 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements St
             public void afterTextChanged(Editable editable) {
 
             }
-        });
-
-        lastNameEditText.setOnKeyListener((view, i, keyEvent) -> {
-            if (i == KeyEvent.KEYCODE_ENTER) {
-                stackFramework.expandView(view2);
-                return true;
-            }
-            return false;
         });
 
         phoneEditText.addTextChangedListener(new TextWatcher() { //similarly add listeners to other views
@@ -213,7 +204,7 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements St
                 } else {
                     filledDetails.setEmail(charSequence.toString().trim());
                     emailTextView.setText(charSequence.toString().trim());
-                    view2.setCompleted(true);
+                    stackFramework.setCompleted(view2, true);
                 }
 
             }
@@ -222,14 +213,6 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements St
             public void afterTextChanged(Editable editable) {
 
             }
-        });
-
-        emailEditText.setOnKeyListener((view, i, keyEvent) -> {
-            if (i == KeyEvent.KEYCODE_ENTER) {
-                stackFramework.expandView(view3);
-                return true;
-            }
-            return false;
         });
 
         queryEditText.addTextChangedListener(new TextWatcher() {
@@ -266,7 +249,7 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements St
                 } else {
                     filledDetails.setRemarks(charSequence.toString().trim());
                     remarksTextView.setText(charSequence.toString().trim());
-                    view3.setCompleted(true);
+                    stackFramework.setCompleted(view3, true);
                 }
 
             }
@@ -275,14 +258,6 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements St
             public void afterTextChanged(Editable editable) {
 
             }
-        });
-
-        remarksEditText.setOnKeyListener((view, i, keyEvent) -> {
-            if (i == KeyEvent.KEYCODE_ENTER) {
-                stackFramework.expandView(view4);
-                return true;
-            }
-            return false;
         });
 
         submitTextView.setText("Submit the form for the event id: " + eventId);
