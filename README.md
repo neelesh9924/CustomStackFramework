@@ -79,12 +79,12 @@ To start using the ***StackFramework***, perform the following steps:
    }
    ```
 
-   The onViewAdded() method is called by the StackFramework when a view is created. In this method, you can access and customize the views as needed.
+   The onViewAdded() method is called by the StackFramework when all views are created. In this method, you can access and customize the views as needed.
 
 4. To handle the completion of the current step, call the setCompleted() method:
 
    ```
-   stackFramework.setCompleted(view1, false);
+   stackFramework.setCompleted(view1, true);
    ```
    The above code marks the view1 as completed and updates the UI accordingly.
 
