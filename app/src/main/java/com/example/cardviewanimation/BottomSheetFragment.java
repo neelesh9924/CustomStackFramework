@@ -156,10 +156,14 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements St
                 if (filledDetails.getFirstName() == null || filledDetails.getFirstName().isEmpty()) {
                     Toast.makeText(requireContext(), "Please enter first name first", Toast.LENGTH_SHORT).show();
                     firstNameEditText.requestFocus();
-                } else {
+                } else if (!charSequence.toString().trim().isEmpty()) {
                     filledDetails.setLastName(charSequence.toString().trim());
                     lastNameTextView.setText(charSequence.toString().trim());
                     stackFramework.setCompleted(view1, true);
+                } else {
+                    filledDetails.setLastName(null);
+                    lastNameTextView.setText(null);
+                    stackFramework.setCompleted(view1, false);
                 }
             }
 
@@ -201,10 +205,14 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements St
                 } else if (filledDetails.getPhone().length() != 10) {
                     Toast.makeText(requireContext(), "Please enter a valid phone number", Toast.LENGTH_SHORT).show();
                     phoneEditText.requestFocus();
-                } else {
+                } else if (!charSequence.toString().trim().isEmpty()) {
                     filledDetails.setEmail(charSequence.toString().trim());
                     emailTextView.setText(charSequence.toString().trim());
                     stackFramework.setCompleted(view2, true);
+                } else {
+                    filledDetails.setEmail(null);
+                    emailTextView.setText(null);
+                    stackFramework.setCompleted(view2, false);
                 }
 
             }
@@ -246,10 +254,14 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements St
                 if (filledDetails.getQuery() == null || filledDetails.getQuery().isEmpty()) {
                     Toast.makeText(requireContext(), "Please enter query first", Toast.LENGTH_SHORT).show();
                     queryEditText.requestFocus();
-                } else {
+                } else if (!charSequence.toString().trim().isEmpty()) {
                     filledDetails.setRemarks(charSequence.toString().trim());
                     remarksTextView.setText(charSequence.toString().trim());
                     stackFramework.setCompleted(view3, true);
+                } else {
+                    filledDetails.setRemarks(null);
+                    remarksTextView.setText(null);
+                    stackFramework.setCompleted(view3, false);
                 }
 
             }

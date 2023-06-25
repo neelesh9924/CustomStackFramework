@@ -96,10 +96,10 @@ public class CustomCardView extends MaterialCardView {
 
     }
 
-    private void setInflatedViewBackgroundColour(boolean isEnabled) { //matching the background colour of the inflated views with the parent
+    private void setInflatedViewBackgroundColour(boolean isCurrentlyEnabled) { //matching the background colour of the inflated views with the parent
 
         int colorId;
-        if (isEnabled) {
+        if (isCurrentlyEnabled) {
             colorId = stackItem.getBgColorId();
         } else {
             colorId = R.color.disabledStepColor;
@@ -117,8 +117,6 @@ public class CustomCardView extends MaterialCardView {
     }
 
     public void expand() { //toggling the visibility of the inner view
-
-//        setInflatedViewBackgroundColour(true); //todo: remove this
 
         mainView.setVisibility(View.VISIBLE);
         preView.setVisibility(View.GONE);
@@ -142,15 +140,15 @@ public class CustomCardView extends MaterialCardView {
         return isCompleted;
     }
 
-    public void setCompleted(Boolean isCompleted) {
+    public void setCompleted(Boolean isCompleted) { //setting the current steps operation completed or not
         this.isCompleted = isCompleted;
     }
 
-    public Boolean getEnabledToExpand() {
+    public Boolean getEnabledToExpand() { //getting the current steps allowed to be expanded or not
         return isEnabled;
     }
 
-    public void setEnabledToExpand(Boolean isEnabled) {
+    public void setEnabledToExpand(Boolean isEnabled) { //setting the current steps allowed to be expanded or not
 
         this.isEnabled = isEnabled;
         setInflatedViewBackgroundColour(isEnabled);

@@ -61,23 +61,7 @@ public class StackFramework {
 
         views.forEach(view -> {
 
-            int currentIndex = views.indexOf(view);
-            int lastIndex = currentIndex - 1;
-
             view.setOnClickListener(v -> {
-
-                /*if (currentIndex == 0) {
-                    expandView(view); //for the first view
-                    return;
-                }
-
-                if (lastIndex >= 0) { //for the rest of the views
-                    if (views.get(lastIndex).getCompleted()) {
-                        expandView(view);
-                    } else {
-                        Toast.makeText(context, "Please fill the above details", Toast.LENGTH_SHORT).show();
-                    }
-                }*/
 
                 if (view.getEnabledToExpand()) {
                     expandView(view);
