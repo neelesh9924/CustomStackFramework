@@ -4,19 +4,19 @@ Download the app for this project here - [app-release.apk](app-release.apk)
 # StackFramework and CustomCardView
 ### Simplified Stack-Based View Management
 
-The StackFramework is a utility class that facilitates the management and interaction of a stack of custom card views. It provides methods for creating and adding views, handling view actions, and notifying the host fragment of changes.
+The **StackFramework** is a utility class that facilitates the management and interaction of a stack of custom card views. It provides methods for creating and adding views, handling view actions, and notifying the host fragment of changes.
 
-The CustomCardView class on the other hand is an extension of the MaterialCardView class that provides additional functionality for creating and managing a custom card view in a stack form.
+The **CustomCardView** class on the other hand is an extension of the MaterialCardView class that provides additional functionality for creating and managing a custom card view in a stack form.
 
 ## Installation
 To use the framework in your Android project, follow these steps:
-1. Add the StackFramework, StackItem and CustomCardView classes to your project.
+1. Add the [StackFramework](app/src/main/java/com/example/frameworks/StackFramework.java), [StackItem](app/src/main/java/com/example/pojo/StackItem.java) and [CustomCardView](app/src/main/java/com/example/customViews/CustomCardView.java) classes to your project.
 2. Make sure you have the Material Card View library included in your project dependencies.
 
 ## Usage
 ### StackFramework
-To start using the StackFramework, perform the following steps:
-1. Create an instance of the StackFramework class:
+To start using the ***StackFramework***, perform the following steps:
+1. Create an instance of the ***StackFramework*** class:
 
    ```
    ArrayList<StackItem> stackItemsList = new ArrayList<>();
@@ -27,7 +27,7 @@ To start using the StackFramework, perform the following steps:
 
    stackFramework = new StackFramework(requireContext(), stackItemsList, this);
    ```
-   In the above code, stackItemsList is an ArrayList of StackItem objects. Each StackItem represents a step in the stack and contains layout resources and colors associated with that step.
+   In the above code, stackItemsList is an ArrayList of ***StackItem*** objects. Each StackItem represents a step in the stack and contains layout resources and colors associated with that step.
 
 2. Call the createAndAddViews() method when you want to create the views:
 
@@ -85,7 +85,7 @@ To start using the StackFramework, perform the following steps:
 ### CustomCardView
 The CustomCardView class extends the MaterialCardView class and provides additional functionality for creating and managing a custom card view in a stack form. Here's how you can use it:
 
-1. Create an instance of the CustomCardView class:
+1. Create an instance of the ***CustomCardView*** class:
    
    ```
    CustomCardView customCardView = new CustomCardView(context);
@@ -97,32 +97,7 @@ The CustomCardView class extends the MaterialCardView class and provides additio
    ```
    The stackItem parameter represents the data associated with the card view, including layout resources and colors.
 3. Customize the card view as needed:
-   You can customize the card view's elevation, radius, and minimum height by modifying the corresponding properties of the MaterialCardView class.
+   You can customize the card view's elevation, radius, and minimum height by modifying/editing the corresponding properties of the ***CustomCardView*** class.
 
-4. Expand or collapse the card view:
-   To expand the card view and show the main content, call the expand() method:
-
-   ```
-   customCardView.expand();
-   ```
-   To collapse the card view and show either the pre-layout or post-layout, call the collapse() method:
-   
-   ```
-   customCardView.collapse();
-   ```
-5. Set the completion status of the card view:
-   To mark the card view as completed, call the setCompleted() method:
-
-   ```
-   customCardView.setCompleted(true);
-   ```
-   This method updates the UI to reflect the completion status.
-
-6. Enable or disable the card view's expansion:
-   To allow or disallow the card view to be expanded, call the setEnabledToExpand() method:
-
-   ```
-   customCardView.setEnabledToExpand(true);
-   ```
-   This method updates the UI to reflect the enabled or disabled state.
+4. The rest of the handling like expand/collapse, enabled/disbaled and other properties are handled by ***StackFramework*** itself.
 
