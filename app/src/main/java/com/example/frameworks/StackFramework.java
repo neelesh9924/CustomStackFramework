@@ -8,44 +8,36 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.customViews.CustomCardView;
+import com.example.customViews.StackViewLayout;
 import com.example.pojo.StackItem;
 
 import java.util.ArrayList;
 
 public class StackFramework {
     private final Context context;
-    private final ArrayList<StackItem> stackItems;
     private final ArrayList<CustomCardView> views;
-    private final OnChangeListener listener;
-    private CustomCardView customCardView;
 
-    public StackFramework(Context context, ArrayList<StackItem> stackItems, OnChangeListener listener) {
+    public StackFramework(Context context, ArrayList<StackItem> StackItems, StackViewLayout StackViewLayout) {
 
         this.context = context;
 
-        this.stackItems = stackItems;
-
-        this.listener = listener;
-
         views = new ArrayList<>();
 
+        createAndAddViews(StackItems, StackViewLayout);
     }
 
-    public void createAndAddViews() { //creating the views and adding them to the list
+    private void createAndAddViews(ArrayList<StackItem> stackItems, StackViewLayout stackViewLayout) { //creating the views and adding them to the list
 
-        stackItems.forEach(stackItem -> {
+        stackItems.forEach(stackItem -> views.add(new CustomCardView(context, stackItem)));
 
-            customCardView = new CustomCardView(context);
-            customCardView.initCardView(stackItem);
+        addStackViewsToStackViewLayout(stackViewLayout);
+    }
 
-            views.add(customCardView);
+    private void addStackViewsToStackViewLayout(StackViewLayout stackViewLayout) {
 
-        });
-
-        listener.onViewAdded(views); //passing the list back to host so they can add in their desired ViewGroup
+        views.forEach(stackViewLayout::addView);
 
         initiateFirstView();
-
     }
 
     private void initiateFirstView() { //expanded first view
@@ -60,21 +52,15 @@ public class StackFramework {
     private void addListeners() { //adding listeners to the views
 
         views.forEach(view -> {
-
             view.setOnClickListener(v -> {
-
                 if (view.getEnabledToExpand()) {
                     expandView(view);
                 } else {
                     Toast.makeText(context, "Please fill the above details", Toast.LENGTH_SHORT).show();
                 }
             });
-
-
         });
-
     }
-
 
     private void expandView(CustomCardView selectedView) {
 
@@ -110,7 +96,7 @@ public class StackFramework {
 
         } else if (state == CardViewState.EXPAND) {
 
-            finalWeight = 5f;
+            finalWeight = 20f;
             view.expand();
         }
 
@@ -129,10 +115,25 @@ public class StackFramework {
         valueAnimator.start();
     }
 
-    public void setCompleted(CustomCardView view, Boolean isComplete) { //setting the view as completed and enabling the next view
+    public void setCompleted(View view, CompletionState action) { //setting the view as completed and enabling the next view
 
-        int currentIndex = views.indexOf(view);
+        boolean isComplete = false;
+
+        int currentIndex = views.indexOf((CustomCardView) view);
         int nextIndex = currentIndex + 1;
+
+        switch (action) {
+            case COMPLETE:
+                isComplete = true;
+                break;
+            case COMPLETE_EXPAND_NEXT:
+                isComplete = true;
+                expandView(views.get(nextIndex));
+
+                break;
+            case INCOMPLETE:
+                break;
+        }
 
         if (nextIndex < views.size()) {
             views.get(currentIndex).setCompleted(isComplete);
@@ -141,15 +142,24 @@ public class StackFramework {
 
     }
 
+    public enum CompletionState {
+        INCOMPLETE,
+        COMPLETE,
+        COMPLETE_EXPAND_NEXT
+    }
+
+    public void getViews(ViewsAddedListener onViewsAdded) { //returning the views to the host fragment
+        onViewsAdded.viewsAdded(views);
+    }
+
+    public interface ViewsAddedListener { //interface for returning the views to the host fragment
+        void viewsAdded(ArrayList<CustomCardView> views);
+
+    }
+
     private enum CardViewState {
         EXPAND,
         COLLAPSE
-    }
-
-    public interface OnChangeListener { //interface to interact with the host fragment
-        void onViewAdded(ArrayList<CustomCardView> views);
-
-
     }
 
 }

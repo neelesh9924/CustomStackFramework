@@ -2,6 +2,6 @@
 <resources>
     <dimen name="bottom_margin_negative">-30dp</dimen>
 
-    <dimen name="bottom_margin_positive">0dp</dimen>
+    <dimen name="bottom_margin_positive">30dp</dimen>
 
 </resources>

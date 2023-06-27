@@ -26,7 +26,7 @@ import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
 
-public class BottomSheetFragment extends BottomSheetDialogFragment implements StackFramework.OnChangeListener {
+public class BottomSheetFragment extends BottomSheetDialogFragment {
 
     FragmentBottomSheetBinding binding;
     BottomSheetListener listener;
@@ -80,49 +80,45 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements St
         //format of stack item: (your layout on expanded), (layout before step isn't reached yet), (layout after a step is been reached), (color of the step)
 
         ArrayList<StackItem> stackItemsList = new ArrayList<>();
-        stackItemsList.add(new StackItem(R.layout.main_layout1, R.layout.pre_layout1, R.layout.post_layout1, R.color.color1));
-        stackItemsList.add(new StackItem(R.layout.main_layout2, R.layout.pre_layout2, R.layout.post_layout2, R.color.color2));
-        stackItemsList.add(new StackItem(R.layout.main_layout3, R.layout.pre_layout3, R.layout.post_layout3, R.color.color3));
-        stackItemsList.add(new StackItem(R.layout.main_layout4, R.layout.pre_layout4, R.layout.post_layout4, R.color.color4));
+        stackItemsList.add(new StackItem(R.layout.pre_layout1, R.layout.main_layout1, R.layout.post_layout1, R.color.color1));
+        stackItemsList.add(new StackItem(R.layout.pre_layout2, R.layout.main_layout2, R.layout.post_layout2, R.color.color2));
+        stackItemsList.add(new StackItem(R.layout.pre_layout3, R.layout.main_layout3, R.layout.post_layout3, R.color.color3));
+        stackItemsList.add(new StackItem(R.layout.pre_layout4, R.layout.main_layout4, R.layout.post_layout4, R.color.color4));
 
-        stackFramework = new StackFramework(requireContext(), stackItemsList, this); //setting up the framework
+        stackFramework = new StackFramework(requireContext(), stackItemsList, binding.linearLayout); //setting up the framework
 
-        stackFramework.createAndAddViews(); //call when you want to create the views
-
+        stackFramework.getViews(new StackFramework.ViewsAddedListener() {
+            @Override
+            public void viewsAdded(ArrayList<CustomCardView> views) {
+                handleInflatedView(views);
+            }
+        });
     }
 
-    @Override
-    public void onViewAdded(ArrayList<CustomCardView> customCardViewsCreated) { //response from the framework when a view are created
-
-        customCardViewsCreated.forEach(customCardView -> binding.linearLayout.addView(customCardView)); //todo: add the views to your desired layout
-
-        handleInflatedView(customCardViewsCreated);
-
-    }
 
     @SuppressLint("SetTextI18n")
     public void handleInflatedView(ArrayList<CustomCardView> customCardViewsCreated) { //todo: handle your inflated views here, adding the data to the views, setting the listeners etc.
 
         //init
-        CustomCardView view1 = customCardViewsCreated.get(0);
+        View view1 = customCardViewsCreated.get(0);
         TextInputEditText firstNameEditText = view1.findViewById(R.id.firstNameTextInputEditText);
         TextInputEditText lastNameEditText = view1.findViewById(R.id.lastNameTextInputEditText);
         TextView firstNameTextView = view1.findViewById(R.id.firstNameTextView);
         TextView lastNameTextView = view1.findViewById(R.id.lastNameTextView);
 
-        CustomCardView view2 = customCardViewsCreated.get(1);
+        View view2 = customCardViewsCreated.get(1);
         TextInputEditText phoneEditText = view2.findViewById(R.id.phoneTextInputEditText);
         TextInputEditText emailEditText = view2.findViewById(R.id.emailTextInputEditText);
         TextView phoneTextView = view2.findViewById(R.id.phoneTextView);
         TextView emailTextView = view2.findViewById(R.id.emailTextView);
 
-        CustomCardView view3 = customCardViewsCreated.get(2);
+        View view3 = customCardViewsCreated.get(2);
         TextInputEditText queryEditText = view3.findViewById(R.id.queryTextInputEditText);
         TextInputEditText remarksEditText = view3.findViewById(R.id.remarksTextInputEditText);
         TextView queryTextView = view3.findViewById(R.id.queryTextView);
         TextView remarksTextView = view3.findViewById(R.id.remarksTextView);
 
-        CustomCardView view4 = customCardViewsCreated.get(3);
+        View view4 = customCardViewsCreated.get(3);
         MaterialButton submitButton = view4.findViewById(R.id.submit_button);
         TextView submitTextView = view4.findViewById(R.id.submitTextView);
 
@@ -159,11 +155,11 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements St
                 } else if (!charSequence.toString().trim().isEmpty()) {
                     filledDetails.setLastName(charSequence.toString().trim());
                     lastNameTextView.setText(charSequence.toString().trim());
-                    stackFramework.setCompleted(view1, true);
+                    stackFramework.setCompleted(view1, StackFramework.CompletionState.COMPLETE);
                 } else {
                     filledDetails.setLastName(null);
                     lastNameTextView.setText(null);
-                    stackFramework.setCompleted(view1, false);
+                    stackFramework.setCompleted(view1, StackFramework.CompletionState.INCOMPLETE);
                 }
             }
 
@@ -208,11 +204,11 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements St
                 } else if (!charSequence.toString().trim().isEmpty()) {
                     filledDetails.setEmail(charSequence.toString().trim());
                     emailTextView.setText(charSequence.toString().trim());
-                    stackFramework.setCompleted(view2, true);
+                    stackFramework.setCompleted(view2, StackFramework.CompletionState.COMPLETE);
                 } else {
                     filledDetails.setEmail(null);
                     emailTextView.setText(null);
-                    stackFramework.setCompleted(view2, false);
+                    stackFramework.setCompleted(view2, StackFramework.CompletionState.INCOMPLETE);
                 }
 
             }
@@ -257,11 +253,11 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements St
                 } else if (!charSequence.toString().trim().isEmpty()) {
                     filledDetails.setRemarks(charSequence.toString().trim());
                     remarksTextView.setText(charSequence.toString().trim());
-                    stackFramework.setCompleted(view3, true);
+                    stackFramework.setCompleted(view3, StackFramework.CompletionState.COMPLETE);
                 } else {
                     filledDetails.setRemarks(null);
                     remarksTextView.setText(null);
-                    stackFramework.setCompleted(view3, false);
+                    stackFramework.setCompleted(view3, StackFramework.CompletionState.INCOMPLETE);
                 }
 
             }
@@ -293,8 +289,8 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements St
     //setting the behaviour of the bottom sheet
     private void setBottomSheetBehaviour(View view) {
 
-        int topPaddingInDp = 80;
-        ((View) view.getParent()).getLayoutParams().height = getResources().getDisplayMetrics().heightPixels - Math.round(getResources().getDisplayMetrics().density * topPaddingInDp);
+//        int topPaddingInDp = 80;
+//        ((View) view.getParent()).getLayoutParams().height = getResources().getDisplayMetrics().heightPixels - Math.round(getResources().getDisplayMetrics().density * topPaddingInDp);
 
         BottomSheetBehavior<View> behavior = BottomSheetBehavior.from((View) view.getParent());
         behavior.setPeekHeight(BottomSheetBehavior.SAVE_PEEK_HEIGHT);

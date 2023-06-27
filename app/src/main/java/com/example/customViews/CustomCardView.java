@@ -13,19 +13,17 @@ import com.google.android.material.card.MaterialCardView;
 public class CustomCardView extends MaterialCardView {
 
     private StackItem stackItem;
-    private final Context context;
     private Boolean isCompleted = false; //to set current steps operation completed or not
-
     private Boolean isEnabled = false; //to set current steps expanded or not
     private View mainView, preView, postView;
 
     public CustomCardView(Context context) {
         super(context);
-        this.context = context;
 
     }
 
-    public void initCardView(StackItem stackItem) { //initialising the card view
+    public CustomCardView(Context context, StackItem stackItem) {
+        super(context);
 
         this.stackItem = stackItem;
 
@@ -37,10 +35,11 @@ public class CustomCardView extends MaterialCardView {
 
     }
 
+
     private void addLayouts() {//inflating the view with the layout id and setting the background colour
 
-        inflate(getContext(), stackItem.getMainLayoutId(), this);
         inflate(getContext(), stackItem.getPreLayoutId(), this);
+        inflate(getContext(), stackItem.getMainLayoutId(), this);
         inflate(getContext(), stackItem.getPostLayoutId(), this);
 
         setLayoutMargin();
@@ -67,11 +66,10 @@ public class CustomCardView extends MaterialCardView {
 
             for (int i = 0; i < getChildCount(); i++) {
 
-                LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+                LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
                 int marginInPixelsPositive = dpToPx(getContext(), getContext().getResources().getDimension(R.dimen.bottom_margin_positive));
                 params.setMargins(0, 0, 0, marginInPixelsPositive);
                 params.gravity = Gravity.TOP;
-
                 getChildAt(i).setLayoutParams(params);
             }
 
@@ -83,11 +81,11 @@ public class CustomCardView extends MaterialCardView {
 
     private void createInstancesChild() { //creating instances and initial visibility of the inflated views
 
-        mainView = getChildAt(0);
-        mainView.setVisibility(View.GONE);
-
-        preView = getChildAt(1);
+        preView = getChildAt(0);
         preView.setVisibility(View.GONE);
+
+        mainView = getChildAt(1);
+        mainView.setVisibility(View.GONE);
 
         postView = getChildAt(2);
         postView.setVisibility(View.GONE);
