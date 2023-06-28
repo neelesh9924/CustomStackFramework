@@ -1,3 +1,12 @@
+# Update
+### ExpandableStackViewLibrary is live! ✅
+You can implement this project simply by using the [ExpandableStackViewLibrary](https://github.com/neelesh9924/ExpandableStackViewLibrary).
+- Customizable layout and appearance of stack items.
+- Efficient management of view inflation, enabling smooth performance.
+- Respond to view actions and changes through the provided interfaces.
+- Easy integration with your existing Android application.
+And much more, do check out.
+
 # Download the APK
 Download the app for this project here - [app-release.apk](app-release.apk)
 
